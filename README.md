@@ -137,6 +137,4 @@ src/test/resources/
 3. Chrome/CDP warnings
 - Son advertencias comunes de version y no necesariamente rompen la ejecucion.
 
-4. Se ejecuta Maven en vez de Gradle
-- Este proyecto se ejecuta con `./gradlew`; `pom.xml` existe como referencia, pero el flujo principal aqui es Gradle.
 
