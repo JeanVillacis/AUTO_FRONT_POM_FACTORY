@@ -12,9 +12,7 @@ public final class TestDataConstants {
     public static final String LOGIN_URL = buildUrl("/login");
     public static final String DASHBOARD_URL = buildUrl("/dashboard");
     public static final String TRANSACTIONS_URL = buildUrl("/transactions");
-
     public static final String REG_DISPLAY_NAME = "Carlos Andrade";
-    // Unique email per execution to avoid duplicate-user registration errors.
     public static final String REG_EMAIL = "carlos.andrade." + System.currentTimeMillis() + "@pruebas.com";
     public static final String REG_PASSWORD = "Prueba2026!";
     public static final String REG_CONFIRM_PASSWORD = "Prueba2026!";

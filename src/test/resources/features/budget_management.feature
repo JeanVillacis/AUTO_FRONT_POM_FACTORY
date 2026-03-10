@@ -1,4 +1,4 @@
-Feature: Alta E2E de usuario y primer egreso
+Feature: Gestión de presupuesto personal E2E
   Como usuario nuevo de la aplicación de presupuesto
   Quiero registrarme, iniciar sesión y crear un primer egreso
   Para comenzar el control de mis finanzas personales
