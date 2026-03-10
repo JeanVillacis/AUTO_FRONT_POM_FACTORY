@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '5.3.2'
+}
+
+group = 'com.budget'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'net.serenity-bdd:serenity-core:4.2.9'
+    testImplementation 'net.serenity-bdd:serenity-cucumber:4.2.9'
+    testImplementation 'net.serenity-bdd:serenity-screenplay:4.2.9'
+    testImplementation 'net.serenity-bdd:serenity-screenplay-webdriver:4.2.9'
+    testImplementation 'io.cucumber:cucumber-java:7.18.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.18.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.9.1'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+test {
+    testLogging.showStandardStreams = true
+}
+
+serenity {
+    reports = ['single-page-html']
+}
