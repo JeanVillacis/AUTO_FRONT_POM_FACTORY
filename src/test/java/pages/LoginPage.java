@@ -1,50 +1,50 @@
 package pages;
 
 import net.serenitybdd.core.pages.PageObject;
-import org.openqa.selenium.WebElement;
+import net.serenitybdd.core.pages.WebElementFacade;
 import org.openqa.selenium.support.FindBy;
 
 public class LoginPage extends PageObject {
 
     @FindBy(css = "input#email, input[name='email'], input[type='email']")
-    private WebElement emailInput;
+    private WebElementFacade emailInput;
 
     @FindBy(css = "input#password, input[name='password'], input[type='password']")
-    private WebElement passwordInput;
+    private WebElementFacade passwordInput;
 
     @FindBy(xpath = "//button[@type='submit' and contains(., 'Iniciar Sesión')]")
-    private WebElement loginSubmitButton;
+    private WebElementFacade loginSubmitButton;
 
     @FindBy(css = "[data-slot='sidebar']")
-    private WebElement dashboardSidebar;
+    private WebElementFacade dashboardSidebar;
 
     public void openPage(String url) {
         getDriver().get(url);
     }
 
     public void enterEmail(String email) {
-        waitFor(emailInput).waitUntilVisible();
+        emailInput.waitUntilVisible();
         emailInput.clear();
         emailInput.sendKeys(email);
     }
 
     public void enterPassword(String password) {
-        waitFor(passwordInput).waitUntilVisible();
+        passwordInput.waitUntilVisible();
         passwordInput.clear();
         passwordInput.sendKeys(password);
     }
 
-    public void clickLoginButton() {
-        waitFor(loginSubmitButton).waitUntilClickable();
+    public void submitLogin() {
+        loginSubmitButton.waitUntilClickable();
         loginSubmitButton.click();
     }
 
     public void waitUntilDashboardIsVisible() {
-        waitFor(dashboardSidebar).waitUntilVisible();
+        dashboardSidebar.waitUntilVisible();
     }
 
     public boolean isDashboardSidebarDisplayed() {
-        waitFor(dashboardSidebar).waitUntilVisible();
+        dashboardSidebar.waitUntilVisible();
         return dashboardSidebar.isDisplayed();
     }
 }

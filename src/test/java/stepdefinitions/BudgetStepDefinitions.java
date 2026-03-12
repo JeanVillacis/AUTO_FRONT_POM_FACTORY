@@ -17,9 +17,9 @@ public class BudgetStepDefinitions {
         budgetSteps.openRegisterPage();
     }
 
-    @When("el usuario se registra con datos válidos")
-    public void elUsuarioSeRegistraConDatosValidos() {
-        budgetSteps.fillRegistrationForm();
+    @When("el usuario se registra con nombre {string} y correo {string}")
+    public void elUsuarioSeRegistraConNombreYCorreo(String nombre, String email) {
+        budgetSteps.fillRegistrationForm(nombre, email);
         budgetSteps.submitRegistration();
     }
 
@@ -33,9 +33,9 @@ public class BudgetStepDefinitions {
         budgetSteps.verifyRedirectToLogin();
     }
 
-    @When("el usuario inicia sesión con las credenciales registradas")
-    public void elUsuarioIniciaSesion() {
-        budgetSteps.fillLoginForm();
+    @When("el usuario inicia sesión con el correo {string}")
+    public void elUsuarioIniciaSesionConCorreo(String email) {
+        budgetSteps.fillLoginForm(email);
         budgetSteps.submitLogin();
     }
 
@@ -54,10 +54,10 @@ public class BudgetStepDefinitions {
         budgetSteps.navigateToTransactions();
     }
 
-    @And("el usuario crea una nueva transacción de tipo egreso con datos válidos")
-    public void elUsuarioCreaUnaTransaccion() {
+    @And("el usuario crea una transacción de tipo {string} con descripción {string}, monto {string} y categoría {string}")
+    public void elUsuarioCreaUnaTransaccion(String tipo, String descripcion, String monto, String categoria) {
         budgetSteps.openNewTransactionModal();
-        budgetSteps.fillTransactionForm();
+        budgetSteps.fillTransactionForm(tipo, descripcion, monto, categoria);
         budgetSteps.submitTransaction();
     }
 

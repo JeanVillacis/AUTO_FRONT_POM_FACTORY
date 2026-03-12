@@ -1,69 +1,66 @@
 package pages;
 
 import net.serenitybdd.core.pages.PageObject;
+import net.serenitybdd.core.pages.WebElementFacade;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.Locale;
 
 public class TransactionPage extends PageObject {
 
-    private static final Duration DEFAULT_WAIT = Duration.ofSeconds(5);
     private static final Duration TABLE_WAIT = Duration.ofSeconds(20);
 
     @FindBy(xpath = "//button[.//span[contains(text(), 'Nueva Transacción')]]")
-    private WebElement newTransactionButton;
+    private WebElementFacade newTransactionButton;
 
     @FindBy(xpath = "//div[@data-slot='dialog-content']//h2[contains(text(), 'Nueva Transacción')]")
-    private WebElement newTransactionDialogTitle;
+    private WebElementFacade newTransactionDialogTitle;
 
     @FindBy(xpath = "//label[normalize-space()='Tipo']/following::button[@role='combobox'][1]")
-    private WebElement typeSelectTrigger;
+    private WebElementFacade typeSelectTrigger;
 
     @FindBy(xpath = "//*[@role='option' and (.='Egreso' or .//*[normalize-space()='Egreso'])]")
-    private WebElement typeOptionExpense;
+    private WebElementFacade typeOptionExpense;
 
     @FindBy(xpath = "//*[@role='option' and (.='Ingreso' or .//*[normalize-space()='Ingreso'])]")
-    private WebElement typeOptionIncome;
+    private WebElementFacade typeOptionIncome;
 
     @FindBy(css = "input[placeholder='Ej: Supermercado']")
-    private WebElement descriptionInput;
+    private WebElementFacade descriptionInput;
 
     @FindBy(css = "input[type='number'][placeholder='0.00']")
-    private WebElement amountInput;
+    private WebElementFacade amountInput;
 
     @FindBy(xpath = "//label[contains(normalize-space(), 'Categor')]/following::button[@role='combobox'][1]")
-    private WebElement categorySelectTrigger;
+    private WebElementFacade categorySelectTrigger;
 
     @FindBy(css = "input[type='date']")
-    private WebElement dateInput;
+    private WebElementFacade dateInput;
 
     @FindBy(xpath = "//div[@data-slot='dialog-content']//button[@type='submit' and contains(., 'Crear Transacción')]")
-    private WebElement createTransactionSubmitButton;
+    private WebElementFacade createTransactionSubmitButton;
 
     @FindBy(xpath = "//li[@data-sonner-toast]")
-    private WebElement transactionSuccessToast;
+    private WebElementFacade transactionSuccessToast;
 
     public void openPage(String url) {
         getDriver().get(url);
     }
 
-    public void clickNewTransactionButton() {
-        waitFor(newTransactionButton).waitUntilClickable();
+    public void openNewTransactionDialog() {
+        newTransactionButton.waitUntilClickable();
         newTransactionButton.click();
     }
 
     public boolean isModalDisplayed() {
-        waitFor(newTransactionDialogTitle).waitUntilVisible();
+        newTransactionDialogTitle.waitUntilVisible();
         return newTransactionDialogTitle.isDisplayed();
     }
 
     public void selectTransactionType(String type) {
-        waitFor(typeSelectTrigger).waitUntilClickable();
+        typeSelectTrigger.waitUntilClickable();
         String currentType = typeSelectTrigger.getText();
 
         TransactionType targetType = TransactionType.from(type);
@@ -72,27 +69,32 @@ public class TransactionPage extends PageObject {
         }
 
         typeSelectTrigger.click();
-        WebDriverWait wait = defaultWait();
 
         if (targetType == TransactionType.EXPENSE) {
-            wait.until(ExpectedConditions.elementToBeClickable(typeOptionExpense));
+            typeOptionExpense.waitUntilClickable();
             typeOptionExpense.click();
         } else {
-            wait.until(ExpectedConditions.elementToBeClickable(typeOptionIncome));
+            typeOptionIncome.waitUntilClickable();
             typeOptionIncome.click();
         }
     }
 
     public void enterDescription(String description) {
-        waitFor(descriptionInput).waitUntilVisible();
+        descriptionInput.waitUntilVisible();
         descriptionInput.clear();
         descriptionInput.sendKeys(description);
     }
 
     public void enterAmount(String amount) {
-        waitFor(amountInput).waitUntilVisible();
-        amountInput.clear();
-        amountInput.sendKeys(amount);
+        amountInput.waitUntilVisible();
+        evaluateJavascript(
+            "var nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;"
+                + "nativeSetter.call(arguments[0], arguments[1]);"
+                + "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));"
+                + "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+            amountInput,
+            amount
+        );
     }
 
     public void selectCategory(String category) {
@@ -100,7 +102,7 @@ public class TransactionPage extends PageObject {
             throw new IllegalArgumentException("El nombre de categoría no puede ser vacío");
         }
 
-        waitFor(categorySelectTrigger).waitUntilClickable();
+        categorySelectTrigger.waitUntilClickable();
         categorySelectTrigger.click();
 
         By categoryOption = By.xpath(
@@ -111,12 +113,12 @@ public class TransactionPage extends PageObject {
                 + "])]"
         );
 
-        WebElement option = defaultWait().until(ExpectedConditions.elementToBeClickable(categoryOption));
-        option.click();
+        $(categoryOption).waitUntilClickable();
+        $(categoryOption).click();
     }
 
     public void enterDate(String date) {
-        waitFor(dateInput).waitUntilVisible();
+        dateInput.waitUntilVisible();
         evaluateJavascript(
             "arguments[0].value = arguments[1];"
                 + "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));"
@@ -126,30 +128,25 @@ public class TransactionPage extends PageObject {
         );
     }
 
-    public void clickCreateTransactionButton() {
-        waitFor(createTransactionSubmitButton).waitUntilClickable();
+    public void submitTransaction() {
+        createTransactionSubmitButton.waitUntilClickable();
         createTransactionSubmitButton.click();
     }
 
     public boolean isSuccessToastDisplayed() {
-        waitFor(transactionSuccessToast).waitUntilVisible();
+        transactionSuccessToast.waitUntilVisible();
         return transactionSuccessToast.isDisplayed();
     }
 
     public boolean isTransactionInTable(String description) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), TABLE_WAIT);
         String descriptionLower = description.toLowerCase(Locale.ROOT);
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(
-            By.xpath(
-                "//table//td[contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '"
-                    + descriptionLower
-                    + "')]"
-            )
-        )).isDisplayed();
-    }
-
-    private WebDriverWait defaultWait() {
-        return new WebDriverWait(getDriver(), DEFAULT_WAIT);
+        By rowLocator = By.xpath(
+            "//table//td[contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '"
+                + descriptionLower
+                + "')]"
+        );
+        $(rowLocator).withTimeoutOf(TABLE_WAIT).waitUntilVisible();
+        return $(rowLocator).isDisplayed();
     }
 
     private String xpathLiteral(String value) {

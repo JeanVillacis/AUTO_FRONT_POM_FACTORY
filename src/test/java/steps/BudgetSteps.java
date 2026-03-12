@@ -9,6 +9,8 @@ import utils.TestDataConstants;
 
 public class BudgetSteps {
 
+    private String lastTransactionDescription;
+
     private RegisterPage registerPage;
     private LoginPage loginPage;
     private TransactionPage transactionPage;
@@ -18,17 +20,17 @@ public class BudgetSteps {
         registerPage.openPage(TestDataConstants.REGISTER_URL);
     }
 
-    @Step("El usuario completa el formulario de registro con datos válidos")
-    public void fillRegistrationForm() {
-        registerPage.enterDisplayName(TestDataConstants.REG_DISPLAY_NAME);
-        registerPage.enterEmail(TestDataConstants.REG_EMAIL);
+    @Step("El usuario completa el formulario de registro con nombre '{0}' y correo '{1}'")
+    public void fillRegistrationForm(String displayName, String email) {
+        registerPage.enterDisplayName(displayName);
+        registerPage.enterEmail(email);
         registerPage.enterPassword(TestDataConstants.REG_PASSWORD);
         registerPage.enterConfirmPassword(TestDataConstants.REG_CONFIRM_PASSWORD);
     }
 
     @Step("El usuario envía el formulario de registro")
     public void submitRegistration() {
-        registerPage.clickRegisterButton();
+        registerPage.submitRegistration();
     }
 
     @Step("El sistema confirma la creación exitosa de la cuenta")
@@ -51,15 +53,15 @@ public class BudgetSteps {
         loginPage.openPage(TestDataConstants.LOGIN_URL);
     }
 
-    @Step("El usuario completa el formulario de login con credenciales válidas")
-    public void fillLoginForm() {
-        loginPage.enterEmail(TestDataConstants.REG_EMAIL);
+    @Step("El usuario completa el formulario de login con correo '{0}'")
+    public void fillLoginForm(String email) {
+        loginPage.enterEmail(email);
         loginPage.enterPassword(TestDataConstants.REG_PASSWORD);
     }
 
     @Step("El usuario envía el formulario de login")
     public void submitLogin() {
-        loginPage.clickLoginButton();
+        loginPage.submitLogin();
     }
 
     @Step("El sistema confirma el inicio de sesión exitoso")
@@ -84,24 +86,25 @@ public class BudgetSteps {
 
     @Step("El usuario abre el modal de nueva transacción")
     public void openNewTransactionModal() {
-        transactionPage.clickNewTransactionButton();
+        transactionPage.openNewTransactionDialog();
         assertThat(transactionPage.isModalDisplayed())
             .as("El modal de nueva transacción debe abrirse")
             .isTrue();
     }
 
-    @Step("El usuario completa el formulario de transacción con datos válidos")
-    public void fillTransactionForm() {
-        transactionPage.selectTransactionType(TestDataConstants.TX_TYPE);
-        transactionPage.enterDescription(TestDataConstants.TX_DESCRIPTION);
-        transactionPage.enterAmount(TestDataConstants.TX_AMOUNT);
-        transactionPage.selectCategory(TestDataConstants.TX_CATEGORY);
+    @Step("El usuario completa el formulario: tipo '{0}', descripción '{1}', monto '{2}', categoría '{3}'")
+    public void fillTransactionForm(String tipo, String descripcion, String monto, String categoria) {
+        lastTransactionDescription = descripcion;
+        transactionPage.selectTransactionType(tipo);
+        transactionPage.enterDescription(descripcion);
+        transactionPage.enterAmount(monto);
+        transactionPage.selectCategory(categoria);
         transactionPage.enterDate(TestDataConstants.TX_DATE);
     }
 
     @Step("El usuario envía el formulario de transacción")
     public void submitTransaction() {
-        transactionPage.clickCreateTransactionButton();
+        transactionPage.submitTransaction();
     }
 
     @Step("El sistema registra la transacción correctamente")
@@ -113,7 +116,7 @@ public class BudgetSteps {
 
     @Step("La transacción aparece en el listado")
     public void verifyTransactionInTable() {
-        assertThat(transactionPage.isTransactionInTable(TestDataConstants.TX_DESCRIPTION))
+        assertThat(transactionPage.isTransactionInTable(lastTransactionDescription))
             .as("La transacción creada debe estar visible en la tabla")
             .isTrue();
     }

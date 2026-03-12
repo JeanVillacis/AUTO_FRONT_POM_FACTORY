@@ -1,56 +1,56 @@
 package pages;
 
 import net.serenitybdd.core.pages.PageObject;
-import org.openqa.selenium.WebElement;
+import net.serenitybdd.core.pages.WebElementFacade;
 import org.openqa.selenium.support.FindBy;
 
 public class RegisterPage extends PageObject {
 
     @FindBy(id = "displayName")
-    private WebElement displayNameInput;
+    private WebElementFacade displayNameInput;
 
     @FindBy(id = "email")
-    private WebElement emailInput;
+    private WebElementFacade emailInput;
 
     @FindBy(id = "password")
-    private WebElement passwordInput;
+    private WebElementFacade passwordInput;
 
     @FindBy(id = "confirmPassword")
-    private WebElement confirmPasswordInput;
+    private WebElementFacade confirmPasswordInput;
 
     @FindBy(xpath = "//button[@type='submit' and contains(., 'Crear Cuenta')]")
-    private WebElement registerSubmitButton;
+    private WebElementFacade registerSubmitButton;
 
     public void openPage(String url) {
         getDriver().get(url);
     }
 
     public void enterDisplayName(String displayName) {
-        waitFor(displayNameInput).waitUntilVisible();
+        displayNameInput.waitUntilVisible();
         displayNameInput.clear();
         displayNameInput.sendKeys(displayName);
     }
 
     public void enterEmail(String email) {
-        waitFor(emailInput).waitUntilVisible();
+        emailInput.waitUntilVisible();
         emailInput.clear();
         emailInput.sendKeys(email);
     }
 
     public void enterPassword(String password) {
-        waitFor(passwordInput).waitUntilVisible();
+        passwordInput.waitUntilVisible();
         passwordInput.clear();
         passwordInput.sendKeys(password);
     }
 
     public void enterConfirmPassword(String confirmPassword) {
-        waitFor(confirmPasswordInput).waitUntilVisible();
+        confirmPasswordInput.waitUntilVisible();
         confirmPasswordInput.clear();
         confirmPasswordInput.sendKeys(confirmPassword);
     }
 
-    public void clickRegisterButton() {
-        waitFor(registerSubmitButton).waitUntilClickable();
+    public void submitRegistration() {
+        registerSubmitButton.waitUntilClickable();
         registerSubmitButton.click();
     }
 
